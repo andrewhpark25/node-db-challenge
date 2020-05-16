@@ -1,0 +1,16 @@
+1. Explain the difference between Relational Databases and SQL.
+
+SQL databases are primarily called as Relational Databases (RDBMS);
+
+SQL databases defines and manipulates data based structured query language (SQL).
+
+
+2. Why do tables need a primary key? Each database table needs a primary key because it ensures row-level accessibility. 
+
+3. What is the name given to a table column that references the primary key on another table. 
+
+Foreign Key
+
+4. What do we need in order to have a many to many relationship between two tables.
+
+A many-to-many relationship occurs when multiple records in a table are associated with multiple records in another table

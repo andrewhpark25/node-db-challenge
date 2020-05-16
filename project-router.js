@@ -16,17 +16,19 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     const projectData = req.body;
-  
-    Projects.addProject(projectData)
-    .then(project => {
-        if(!projectData.name) {
-            res.status(404).json({
-                message: 'Please enter a name'
-            })
+    const {id} = req.params;
+
+    Projects.addProject(projectData, id)
+    .then(id => {
+        if(projectData.name) {
+          res.status(201).json({ created: id[0] });
+           
         }  else {
-        res.status(201).json(project);
-       }
-    }) 
+          res.status(404).json({
+            message: 'Please enter a name'
+          })
+        }}
+        )
     .catch (err => {
       res.status(500).json({ message: 'Failed to create new project' });
     });
@@ -51,16 +53,21 @@ router.post('/', (req, res) => {
   router.post('/:id/tasks', (req, res) => {
 
     const taskData = req.body;
+    const {id} = req.params
   
-    Projects.addTask(taskData)
-    .then(task => {
+    Projects.getById(id)
+    .then(project => {
 
-        if(!taskData.task_description) {
-            res.status(404).json({message:"Description is required"})
-        } else {
-       
+      if(project) {
+        Projects.addTask(taskData, id)
+        .then(task => {
+          if(taskData.tasks_description && taskData.project_id) {
             res.status(201).json(task);
+        } else {
+          res.status(404).json({error:"Description is required"})
+         
         }})
+      }})
         .catch(err => {
             console.log(err);
             res.status(500).json({ error: "There was an error while saving the task to the database"})
@@ -83,19 +90,25 @@ router.post('/', (req, res) => {
     });
   });
 
+ 
   router.post('/:id/resources', (req, res) => {
 
     const resourceData = req.body;
+    const {id} = req.params
   
-    Projects.addResource(resourceData)
-    .then(resource => {
+    Projects.getById(id)
+    .then(project => {
 
-        if(!resourceData.resource_name) {
-            res.status(404).json({message:"name is required"})
-        } else {
-       
+      if(project) {
+        Projects.addResource(resourceData, id)
+        .then(resource => {
+          if(resourceData.resource_name && resourceData.project_id) {
             res.status(201).json(resource);
+        } else  {
+          res.status(404).json({error:"name is required"})
+         
         }})
+      }})
         .catch(err => {
             console.log(err);
             res.status(500).json({ error: "There was an error while saving the resource to the database"})
